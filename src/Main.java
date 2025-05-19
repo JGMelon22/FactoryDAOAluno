@@ -1,15 +1,32 @@
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+        try (Scanner scanner = new Scanner(System.in); Connection conn = ConnectionFactory.criaConexao()) {
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
+            // Criando instância do AlunoDAO
+            AlunoDAO alunoDAO = new AlunoDAO();
+
+            // Solicitando a matrícula do aluno
+            System.out.print("Digite a matrícula do aluno: ");
+            int matricula = scanner.nextInt();
+
+            // Buscando o aluno no banco de dados
+            Aluno aluno = alunoDAO.buscaAluno(matricula);
+
+            // Exibindo as informações do aluno, caso encontrado
+            System.out.println("Aluno encontrado:");
+            System.out.println("ID: " + aluno.getIdaluno());
+            System.out.println("Matrícula: " + aluno.getMatricula());
+            System.out.println("Nome: " + aluno.getNome());
+        } catch (AlunoNaoEncontradoException e) {
+            System.out.println(e.getMessage());
+        } catch (SQLException e) {
+            System.err.println("Erro de banco de dados: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("Erro inesperado: " + e.getMessage());
         }
     }
 }
